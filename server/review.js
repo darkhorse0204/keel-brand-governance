@@ -33,7 +33,14 @@ export async function runReview(db, subId, { ai = false, actor = null, today } =
   if (ai && aiEnabled(db)) {
     const r = await aiReview(db, { submission_id: sub.id, body: rev.body, channel: sub.channel, format: sub.format, intent: j(sub.intent, {}) });
     aiMeta = r.ok ? { ok: true, summary: r.summary, intent: r.intent, kept: r.findings.length, discarded: r.discarded.length, at: now() } : { ok: false, error: r.error, at: now() };
-    if (r.ok) for (const f of r.findings) { f.fingerprint = aiFingerprint(f); findings.push(f); }
+    if (r.ok) {
+      // the ai sometimes repeats what the rule engine already caught (same rule, same words) - keep one copy
+      const dup = (f) => result.findings.some((g) => g.engine === "rules" && g.rule_id === f.rule_id && g.start != null && f.start < g.end && g.start < f.end);
+      const fresh = r.findings.filter((f) => !dup(f));
+      aiMeta.kept = fresh.length;
+      aiMeta.duplicates = r.findings.length - fresh.length;
+      for (const f of fresh) { f.fingerprint = aiFingerprint(f); findings.push(f); }
+    }
   } else {
     // carry previous AI findings whose quoted text still exists in this revision
     const prevAi = db.prepare("SELECT * FROM findings WHERE submission_id=? AND revision=? AND engine='ai'").all(sub.id, rev.number - 1);

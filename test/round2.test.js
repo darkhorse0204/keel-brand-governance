@@ -159,3 +159,33 @@ test("insights: the seeded clarification shows before/after, and the clarified r
   assert.ok(ins.unclear.some((u) => u.rule_id === "TERM-02"), "TERM-02 still flagged as unclear");
   assert.ok(!ins.unclear.some((u) => u.rule_id === "CLAIM-01"));
 });
+
+test("AI falls back to the next model when the main one is overloaded", async () => {
+  const seen = [];
+  ai._setClientForTests({ models: { generateContent: async (req) => {
+    seen.push(req.model);
+    if (seen.length === 1) { const e = new Error("high demand"); e.status = 503; throw e; }
+    return jsonResponse({ summary: "ok", intent_alignment: { verdict: "aligned", note: "" }, findings: [] });
+  } } });
+  const r = await ai.aiReview(db, { submission_id: null, body: "Hello members.", channel: "email", format: "text" });
+  assert.equal(r.ok, true);
+  assert.equal(seen[0], ai.MODEL);
+  assert.notEqual(seen[1], ai.MODEL, "second try used a fallback model");
+  assert.equal(db.prepare("SELECT model FROM ai_log ORDER BY id DESC LIMIT 1").get().model, seen[1], "the log records the model that answered");
+});
+
+test("AI findings that repeat a rule-engine finding are dropped (one copy per problem)", async () => {
+  const { runReview } = await import("../server/review.js");
+  const t = new Date().toISOString();
+  db.prepare("INSERT INTO submissions(id,title,channel,format,status,author_id,intent,current_revision,created_at,updated_at) VALUES('s_dup','dup','email','text','draft','u_aditi','{}',1,?,?)").run(t, t);
+  db.prepare("INSERT INTO revisions(submission_id,number,body,images,author_id,created_at) VALUES('s_dup',1,?,'[]','u_aditi',?)").run("Download the FernWay app. You'll regret it if you wait.", t);
+  ai._setClientForTests({ models: { generateContent: async () => jsonResponse({ summary: "", intent_alignment: { verdict: "aligned", note: "" }, findings: [
+    { rule_id: "TERM-01", quote: "FernWay", issue: "spelling", why: "x", replacement: "Fernway", severity: "major", confidence: 0.95 },
+    { rule_id: "TONE-05", quote: "You'll regret it if you wait", issue: "fear", why: "x", replacement: "Start whenever you're ready", severity: "minor", confidence: 0.9 },
+  ] }) } });
+  const r = await runReview(db, "s_dup", { ai: true });
+  assert.equal(r.ai.kept, 1); assert.equal(r.ai.duplicates, 1);
+  const rows = db.prepare("SELECT rule_id, engine FROM findings WHERE submission_id='s_dup'").all();
+  assert.equal(rows.filter((f) => f.rule_id === "TERM-01").length, 1);
+  assert.ok(rows.some((f) => f.rule_id === "TONE-05" && f.engine === "ai"));
+});
