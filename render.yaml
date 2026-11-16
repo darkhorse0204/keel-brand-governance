@@ -1,0 +1,19 @@
+# One-click deploy on Render (https://render.com): New → Blueprint → pick this repository.
+# Free plan: the service sleeps after ~15 minutes without visitors and takes about a minute to wake.
+# Storage on the free plan is temporary, so the demo workspace is re-created on every restart.
+services:
+  - type: web
+    name: keel-brand-governance
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/users
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      # Optional: enables the AI reviewer (Google Gemini). Without it Keel runs in rules-only mode.
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-flash-latest
