@@ -1,0 +1,301 @@
+{
+  "engine": "rules",
+  "date": "2026-11-16T21:42:09.239Z",
+  "evalDate": "2026-11-14",
+  "overall": {
+    "cases": 126,
+    "tp": 163,
+    "fp": 3,
+    "fn": 4,
+    "precision": 0.982,
+    "recall": 0.976,
+    "f1": 0.979
+  },
+  "handwritten": {
+    "cases": 22,
+    "tp": 45,
+    "fp": 0,
+    "fn": 1,
+    "precision": 1,
+    "recall": 0.978,
+    "f1": 0.989
+  },
+  "holdout": {
+    "cases": 14,
+    "tp": 4,
+    "fp": 3,
+    "fn": 3,
+    "precision": 0.571,
+    "recall": 0.571,
+    "f1": 0.571
+  },
+  "generated": {
+    "cases": 90,
+    "tp": 114,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1
+  },
+  "byRule": {
+    "A11Y-01": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "A11Y-02": {
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "A11Y-03": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "A11Y-04": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "A11Y-05": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "CHAN-01": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "CLAIM-01": {
+      "tp": 39,
+      "fp": 0,
+      "fn": 2,
+      "precision": 1,
+      "recall": 0.951
+    },
+    "CLAIM-02": {
+      "tp": 26,
+      "fp": 2,
+      "fn": 1,
+      "precision": 0.929,
+      "recall": 0.963
+    },
+    "CLAIM-03": {
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "CONF-01": {
+      "tp": 9,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1,
+      "recall": 0.9
+    },
+    "TERM-01": {
+      "tp": 6,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.857,
+      "recall": 1
+    },
+    "TERM-02": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "TERM-03": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "TONE-01": {
+      "tp": 12,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "TONE-02": {
+      "tp": 19,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "TONE-03": {
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "TONE-04": {
+      "tp": 9,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    },
+    "VIS-01": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    }
+  },
+  "bySeverity": {
+    "blocker": {
+      "tp": 31,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1,
+      "recall": 0.969
+    },
+    "major": {
+      "tp": 80,
+      "fp": 3,
+      "fn": 3,
+      "precision": 0.964,
+      "recall": 0.964
+    },
+    "minor": {
+      "tp": 52,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1
+    }
+  },
+  "errors": [
+    {
+      "case": "H07",
+      "type": "missed",
+      "rule": "CLAIM-01",
+      "severity": "major",
+      "text": "faster than ever"
+    },
+    {
+      "case": "X01",
+      "type": "false alarm",
+      "rule": "CLAIM-02",
+      "severity": "major",
+      "text": "80%"
+    },
+    {
+      "case": "X06",
+      "type": "missed",
+      "rule": "CONF-01",
+      "severity": "blocker",
+      "text": "Canopy"
+    },
+    {
+      "case": "X09",
+      "type": "false alarm",
+      "rule": "TERM-01",
+      "severity": "major",
+      "text": "FERNWAY"
+    },
+    {
+      "case": "X09",
+      "type": "false alarm",
+      "rule": "CLAIM-02",
+      "severity": "major",
+      "text": "482913"
+    },
+    {
+      "case": "X10",
+      "type": "missed",
+      "rule": "CLAIM-01",
+      "severity": "major",
+      "text": "fastest-growing"
+    },
+    {
+      "case": "X12",
+      "type": "missed",
+      "rule": "CLAIM-02",
+      "severity": "major",
+      "text": "Most of our members"
+    }
+  ],
+  "gate": {
+    "rule": "blocker precision >= 0.9",
+    "value": 1,
+    "pass": true
+  },
+  "baseline": {
+    "date": "2026-11-16T21:21:55.925Z",
+    "overall": {
+      "cases": 112,
+      "tp": 158,
+      "fp": 18,
+      "fn": 2,
+      "precision": 0.898,
+      "recall": 0.988,
+      "f1": 0.941
+    },
+    "handwritten": {
+      "cases": 22,
+      "tp": 44,
+      "fp": 14,
+      "fn": 2,
+      "precision": 0.759,
+      "recall": 0.957,
+      "f1": 0.847
+    },
+    "generated": {
+      "cases": 90,
+      "tp": 114,
+      "fp": 4,
+      "fn": 0,
+      "precision": 0.966,
+      "recall": 1,
+      "f1": 0.983
+    },
+    "bySeverity": {
+      "blocker": {
+        "tp": 31,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1
+      },
+      "major": {
+        "tp": 77,
+        "fp": 15,
+        "fn": 1,
+        "precision": 0.837,
+        "recall": 0.987
+      },
+      "minor": {
+        "tp": 50,
+        "fp": 3,
+        "fn": 1,
+        "precision": 0.943,
+        "recall": 0.98
+      }
+    }
+  }
+}
