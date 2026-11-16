@@ -16,13 +16,16 @@ import { escapeRe } from "./engine/text.js";
 // gemini-2.5-flash answered in about a second in our live tests; newer flash models were often
 // overloaded (503). if the main model is busy or missing we try the fallbacks in order.
 export const MODEL = process.env.GEMINI_MODEL || process.env.KEEL_MODEL || "gemini-2.5-flash";
-const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS ?? "gemini-2.5-flash-lite,gemini-3.5-flash")
+// on the free tier each model has its own small daily quota (20 requests in our tests), so a chain
+// of models keeps ai working longer. a model that hit its daily limit is skipped until it resets.
+const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS ?? "gemini-3.5-flash,gemini-3.8-flash,gemini-3.7-flash,gemini-3.6-flash")
   .split(",").map((s) => s.trim()).filter((m) => m && m !== MODEL);
+const restingUntil = new Map(); // model -> time (ms) when its quota should be back
 export const PROVIDER = "Google Gemini";
 const apiKey = () => process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 let client = null;
 // json mode is only available on the v1beta api, so pin it (some keys default to v1)
-const getClient = () => (client ||= new GoogleGenAI({ apiKey: apiKey(), apiVersion: "v1beta" }));
+const getClient = () => (client ||= new GoogleGenAI({ apiKey: apiKey(), apiVersion: "v1beta", httpOptions: { timeout: 90_000 } }));
 let lastModel = MODEL; // the model that actually answered the latest call, for the ai log
 /** Tests swap in a fake client so the request shaping and guardrails can be checked without a key. */
 export function _setClientForTests(c) { client = c; }
@@ -82,7 +85,9 @@ function geminiSchema(schema) {
  */
 async function callJson({ system, content, schema, temperature = 0.2 }) {
   const parts = typeof content === "string" ? [{ text: content }] : content;
-  const models = [MODEL, ...FALLBACK_MODELS];
+  const all = [MODEL, ...FALLBACK_MODELS];
+  const awake = all.filter((m) => !(restingUntil.get(m) > Date.now()));
+  const models = awake.length ? awake : all; // if everything is resting, try anyway (quotas may have reset)
   let res;
   for (const [i, model] of models.entries()) {
     try {
@@ -95,8 +100,16 @@ async function callJson({ system, content, schema, temperature = 0.2 }) {
       lastModel = model;
       break;
     } catch (e) {
-      // busy, rate-limited or missing model: try the next one; anything else (bad key, bad request) stops here
-      const retry = [404, 429, 500, 503].includes(e?.status) && i < models.length - 1;
+      // daily quota used up: rest this model until google says it resets (fallback: an hour)
+      if (e?.status === 429 && /PerDay/i.test(String(e.message))) {
+        const secs = +(/retryDelay\D+(\d+)s/.exec(String(e.message))?.[1] || 3600);
+        restingUntil.set(model, Date.now() + secs * 1000);
+      }
+      if (e?.status === 404) restingUntil.set(model, Date.now() + 24 * 3600e3); // model not available for this key
+      // busy, rate-limited, missing model or a network hiccup: try the next one.
+      // anything else (bad key, bad request) stops here.
+      const network = !e?.status && /fetch failed|timeout|ECONNRESET|ETIMEDOUT|aborted/i.test(String(e?.message || e?.cause?.code || ""));
+      const retry = ([404, 429, 500, 503].includes(e?.status) || network) && i < models.length - 1;
       if (!retry) { lastModel = model; throw e; }
     }
   }

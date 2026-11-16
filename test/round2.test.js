@@ -189,3 +189,17 @@ test("AI findings that repeat a rule-engine finding are dropped (one copy per pr
   assert.equal(rows.filter((f) => f.rule_id === "TERM-01").length, 1);
   assert.ok(rows.some((f) => f.rule_id === "TONE-05" && f.engine === "ai"));
 });
+
+test("a model that used up its daily quota is skipped on the next call", async () => {
+  const seen = [];
+  ai._setClientForTests({ models: { generateContent: async (req) => {
+    seen.push(req.model);
+    if (req.model === ai.MODEL) { const e = new Error('{"quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","retryDelay":"3600s"}'); e.status = 429; throw e; }
+    return jsonResponse({ summary: "ok", intent_alignment: { verdict: "aligned", note: "" }, findings: [] });
+  } } });
+  await ai.aiReview(db, { submission_id: null, body: "Hello members.", channel: "email", format: "text" });
+  seen.length = 0;
+  const r = await ai.aiReview(db, { submission_id: null, body: "Hello again.", channel: "email", format: "text" });
+  assert.equal(r.ok, true);
+  assert.ok(!seen.includes(ai.MODEL), "the exhausted model was not called again");
+});

@@ -27,7 +27,7 @@ cp .env.example .env        # then put your key in .env: GEMINI_API_KEY=...
 npm start                   # npm start / dev / eval read .env automatically
 ```
 
-Get a key at https://aistudio.google.com/apikey. The default model is `gemini-2.5-flash`; if it is busy or missing, Keel falls back to `gemini-2.5-flash-lite` and then `gemini-3.5-flash` (change with `GEMINI_MODEL` and `GEMINI_FALLBACK_MODELS`).
+Get a key at https://aistudio.google.com/apikey. The default model is `gemini-2.5-flash`; if it is busy or missing, Keel falls back to `gemini-3.5-flash`, `gemini-3.8-flash`, `gemini-3.7-flash` and `gemini-3.6-flash` in turn. On Google's free tier each model allows only about 20 requests a day, and a model that hits its daily limit is skipped until it resets (change with `GEMINI_MODEL` and `GEMINI_FALLBACK_MODELS`).
 
 ### Demo accounts (pick on the sign-in screen)
 
