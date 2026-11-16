@@ -1,6 +1,6 @@
 {
   "engine": "rules",
-  "date": "2026-11-16T21:42:09.239Z",
+  "date": "2026-11-16T21:58:51.462Z",
   "evalDate": "2026-11-14",
   "overall": {
     "cases": 126,
@@ -244,6 +244,41 @@
     "rule": "blocker precision >= 0.9",
     "value": 1,
     "pass": true
+  },
+  "ai": {
+    "model": "gemini-2.5-flash",
+    "cases": 8,
+    "tp": 4,
+    "fp": 0,
+    "fn": 1,
+    "precision": 1,
+    "recall": 0.8,
+    "f1": 0.889,
+    "byRule": {
+      "MSG-01": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1
+      },
+      "MSG-02": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1
+      },
+      "TONE-05": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 1,
+        "precision": 1,
+        "recall": 0.667
+      }
+    },
+    "discardedAsUngrounded": 1,
+    "errors": []
   },
   "baseline": {
     "date": "2026-11-16T21:21:55.925Z",

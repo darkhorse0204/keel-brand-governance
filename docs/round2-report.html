@@ -121,7 +121,7 @@
   <tr><td>AI</td><td>Google Gemini through the official @google/genai SDK, with JSON answers checked by zod</td><td>The team has Gemini access. Structured answers can be checked by code. The app works without it.</td></tr>
   <tr><td>Documents</td><td>mammoth (Word), pdf.js (PDF), jszip (PowerPoint)</td><td>Read documents on our own server.</td></tr>
   <tr><td>Text in images</td><td>Tesseract OCR with the English model bundled</td><td>Runs on our server, so images are not sent anywhere for this.</td></tr>
-  <tr><td>Testing</td><td>node:test, a headless-browser script, a labelled accuracy test set</td><td>45 automated tests, an 18-step browser test, and an accuracy check on every change.</td></tr>
+  <tr><td>Testing</td><td>node:test, a headless-browser script, a labelled accuracy test set</td><td>47 automated tests, an 18-step browser test, and an accuracy check on every change.</td></tr>
   <tr><td>Hosting</td><td>Render (free plan), GitHub Actions</td><td>Public link with no setup; tests run on every push.</td></tr>
 </table>
 
@@ -185,6 +185,8 @@
 <img src="screenshots/17-accuracy.png" alt="Measured accuracy card in the app">
 <figcaption><b>Figure 4.</b> The accuracy results inside the app (Insights page). The build fails if fewer than 90% of blocker flags are correct.</figcaption>
 </figure>
+<h3>AI checks on the live Gemini service</h3>
+<p>We ran every AI feature against the real Gemini service: AI review, rewrite, image review and style-guide import. On our 8 labelled AI cases (fear-based or guilt-tripping lines, competing calls to action, messages that go against the brand's key promises) the AI scored 100% precision and 100% recall on the first run, and 100% precision and 80% recall on the second. Eight cases is a small sample. Live testing also found three problems we fixed: JSON answers need Gemini's v1beta API, a busy model now falls back to another model, and AI findings that repeat a rule-engine finding are removed.</p>
 <h3>Clarifying an unclear rule</h3>
 <p>In the demo data, a rule about claims was dismissed 50% of the time (4 decisions). After the brand admin clarified when approved member quotes are allowed, it was dismissed 17% of the time (6 decisions). These numbers come from made-up demo data and only show how the feature works; real numbers will come from real use.</p>
 <figure>
@@ -218,7 +220,7 @@
 <ul>
   <li>Sign-in is a demo: you pick a person, with no password. Real use needs company sign-in.</li>
   <li>English only. Scanned PDFs have no text layer: export those pages as images and use "Read text in image". Old .ppt files must be saved as .pptx.</li>
-  <li>The AI features have been tested with a simulated Gemini service. We still need to run them against the live Gemini service and score them on their own test cases.</li>
+  <li>The AI test set is small (8 cases), and AI answers vary between runs. AI checks can take 10 to 40 seconds when Gemini is busy.</li>
   <li>The free hosting plan sleeps when idle and resets the demo when it restarts.</li>
 </ul>
 

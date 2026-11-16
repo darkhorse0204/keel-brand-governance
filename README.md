@@ -27,7 +27,7 @@ cp .env.example .env        # then put your key in .env: GEMINI_API_KEY=...
 npm start                   # npm start / dev / eval read .env automatically
 ```
 
-Get a key at https://aistudio.google.com/apikey. The default model is `gemini-flash-latest` (Google's alias for the current Flash model); set `GEMINI_MODEL` to pin a specific one.
+Get a key at https://aistudio.google.com/apikey. The default model is `gemini-2.5-flash`; if it is busy or missing, Keel falls back to `gemini-2.5-flash-lite` and then `gemini-3.5-flash` (change with `GEMINI_MODEL` and `GEMINI_FALLBACK_MODELS`).
 
 ### Demo accounts (pick on the sign-in screen)
 
@@ -80,15 +80,16 @@ eval/              labelled test set + runner (precision/recall, quality gate) â
 
 ### AI usage details
 
-- SDK: `@google/genai`. Model: `gemini-flash-latest` by default (override with `GEMINI_MODEL`).
+- SDK: `@google/genai`. Model: `gemini-2.5-flash` by default (override with `GEMINI_MODEL`).
 - Structured output: `responseMimeType: "application/json"` with `responseJsonSchema`, then validated again with `zod`.
 - Blocked prompts or safety stops are reported as "the AI declined"; API errors (bad key, quota, missing model, outage) become plain messages. The rule engine is never blocked by AI failures.
-- **Tested with a fake Gemini client** (request shape, redaction, grounding, error handling). **Not yet run against the live Gemini API in this repository's test runs**: run one real AI review after setting `GEMINI_API_KEY`, and `npm run eval -- --ai` to score the AI layer.
+- **Tested both ways.** Automated tests use a fake Gemini client (request shape, redaction, grounding, fallbacks, error handling). We also ran every AI feature against the live Gemini API on 18 Nov 2026: AI review, rewrite, image review and style-guide import all worked, and the AI layer scored 100% precision / 100% recall and then 100% / 80% on two runs of the 8 labelled AI cases (`npm run eval -- --ai`). Eight cases is a small sample.
+- Live testing found and fixed three things: the SDK must use the `v1beta` API for JSON output, busy models need fallbacks, and the AI sometimes repeated rule-engine findings (now dropped as duplicates).
 
 ## Testing and accuracy
 
 ```bash
-npm test                   # 45 unit + API tests (node:test), including PDF/PowerPoint/OCR fixtures
+npm test                   # 47 unit + API tests (node:test), including PDF/PowerPoint/OCR fixtures
 npm run eval               # accuracy on the labelled test set â†’ docs/eval-report.md (fails if blocker precision < 90%)
 npm run eval -- --ai       # also score the AI layer (needs GEMINI_API_KEY)
 npm start & npm run e2e    # headless Edge/Chrome walkthrough (18 steps), writes docs/screenshots/*.png

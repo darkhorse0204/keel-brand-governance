@@ -56,6 +56,10 @@ Baseline run: 2026-11-16
 | TONE-04 | 100% | 100% | 9 | 0 | 0 |
 | VIS-01 | 100% | 100% | 1 | 0 | 0 |
 
+## AI layer
+
+Model gemini-2.5-flash: precision 100%, recall 80% on 8 cases; 1 AI findings discarded as ungrounded.
+
 ## Every error
 
 | Case | Type | Rule | Severity | Text |

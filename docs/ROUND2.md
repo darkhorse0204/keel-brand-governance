@@ -70,8 +70,9 @@ In Round 1 we committed to three improvements. This page shows what we built for
   - secret words are hidden before sending;
   - every AI finding must quote the real text and name a real rule;
   - every call is logged.
-  - Model: `gemini-flash-latest`, which can be changed with `GEMINI_MODEL`.
-- **Tests:** 45 automated tests (up from 28) cover the new formats, OCR, the Gemini request and its safety checks (using a fake Gemini client), the clarification loop, and each false-alarm fix. A browser walkthrough clicks through 18 steps across all four roles.
+  - Model: `gemini-2.5-flash`, which can be changed with `GEMINI_MODEL`.
+- **Tests:** 47 automated tests (up from 28) cover the new formats, OCR, the Gemini request and its safety checks (with a fake Gemini client), model fallbacks, duplicate removal, the clarification loop, and each false-alarm fix. A browser walkthrough clicks through 18 steps across all four roles.
+- **Live AI check (18 Nov):** every AI feature was run against the real Gemini API. On the 8 labelled AI cases the AI layer scored 100% precision and 100% recall on the first run, and 100% / 80% on the second (one fear-based line missed, one ungrounded finding thrown away). We fixed three problems this found: JSON output needs the `v1beta` API, busy models now fall back to another model, and AI findings that repeat a rule-engine finding are dropped.
 - **Continuous integration:** GitHub Actions runs the tests, the accuracy evaluation and the build on every push.
 
 ## Round 3: three new improvements
@@ -82,13 +83,13 @@ Our first three improvements are finished, so for Round 3 we commit to three new
 2. **Checks where people write.** A Chrome/Edge extension for any text box, plus a pre-publish API with access keys, so a CMS can block publishing until Keel approves.
 3. **Learning from reviewer decisions.** Draft rule exceptions or clearer rules from repeated rejections (with Gemini), approved by an admin and checked against the accuracy test set before they go live. We will also grow the untouched test set to 50+ real drafts from interviews and fix the four known gaps.
 
-We will also do the user interviews and the hands-on test planned in Round 1, and score the AI layer on the live Gemini API (`npm run eval -- --ai`).
+We will also do the user interviews and the hands-on test planned in Round 1, and grow the AI test cases from 8 to 40 or more so the AI score means more.
 
 ## How to check our work
 
 ```bash
 npm install && npm run build && npm start   # app on http://localhost:8787
-npm test                                   # 45 tests
+npm test                                   # 47 tests
 npm run eval                               # accuracy report → docs/eval-report.md
 ```
 
