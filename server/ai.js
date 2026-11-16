@@ -13,13 +13,17 @@ import { z } from "zod";
 import { getSetting, now, loadBrandKit } from "./db.js";
 import { escapeRe } from "./engine/text.js";
 
-// "gemini-flash-latest" is Google's rolling alias for the current Flash model; pin a specific
-// model with GEMINI_MODEL (e.g. gemini-2.5-flash) if you need repeatable behaviour.
-export const MODEL = process.env.GEMINI_MODEL || process.env.KEEL_MODEL || "gemini-flash-latest";
+// gemini-2.5-flash answered in about a second in our live tests; newer flash models were often
+// overloaded (503). if the main model is busy or missing we try the fallbacks in order.
+export const MODEL = process.env.GEMINI_MODEL || process.env.KEEL_MODEL || "gemini-2.5-flash";
+const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS ?? "gemini-2.5-flash-lite,gemini-3.5-flash")
+  .split(",").map((s) => s.trim()).filter((m) => m && m !== MODEL);
 export const PROVIDER = "Google Gemini";
 const apiKey = () => process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 let client = null;
-const getClient = () => (client ||= new GoogleGenAI({ apiKey: apiKey() }));
+// json mode is only available on the v1beta api, so pin it (some keys default to v1)
+const getClient = () => (client ||= new GoogleGenAI({ apiKey: apiKey(), apiVersion: "v1beta" }));
+let lastModel = MODEL; // the model that actually answered the latest call, for the ai log
 /** Tests swap in a fake client so the request shaping and guardrails can be checked without a key. */
 export function _setClientForTests(c) { client = c; }
 
@@ -60,7 +64,7 @@ function locate(body, quote) {
 
 function logAi(db, row) {
   db.prepare(`INSERT INTO ai_log(submission_id,purpose,model,chars_sent,redactions,outcome,kept,discarded,created_at) VALUES(?,?,?,?,?,?,?,?,?)`)
-    .run(row.submission_id ?? null, row.purpose, MODEL, row.chars_sent, row.redactions, row.outcome, row.kept ?? 0, row.discarded ?? 0, now());
+    .run(row.submission_id ?? null, row.purpose, lastModel, row.chars_sent, row.redactions, row.outcome, row.kept ?? 0, row.discarded ?? 0, now());
 }
 
 /** Drop JSON-schema keywords that Gemini's response schema may not accept; zod re-validates anyway. */
@@ -78,12 +82,24 @@ function geminiSchema(schema) {
  */
 async function callJson({ system, content, schema, temperature = 0.2 }) {
   const parts = typeof content === "string" ? [{ text: content }] : content;
-  const res = await getClient().models.generateContent({
-    model: MODEL,
-    contents: [{ role: "user", parts }],
-    config: { systemInstruction: system, temperature, maxOutputTokens: 16000,
-      responseMimeType: "application/json", responseJsonSchema: geminiSchema(schema) },
-  });
+  const models = [MODEL, ...FALLBACK_MODELS];
+  let res;
+  for (const [i, model] of models.entries()) {
+    try {
+      res = await getClient().models.generateContent({
+        model,
+        contents: [{ role: "user", parts }],
+        config: { systemInstruction: system, temperature, maxOutputTokens: 16000,
+          responseMimeType: "application/json", responseJsonSchema: geminiSchema(schema) },
+      });
+      lastModel = model;
+      break;
+    } catch (e) {
+      // busy, rate-limited or missing model: try the next one; anything else (bad key, bad request) stops here
+      const retry = [404, 429, 500, 503].includes(e?.status) && i < models.length - 1;
+      if (!retry) { lastModel = model; throw e; }
+    }
+  }
   if (res.promptFeedback?.blockReason) return { refused: true };
   const cand = res.candidates?.[0];
   if (!cand) return { refused: true };
@@ -146,7 +162,7 @@ const REVIEW_SYSTEM = `You are Keel, a brand-governance reviewer. You check draf
 How to work:
 - Only raise an issue when you can tie it to one of the rule IDs supplied. If no rule applies, do not raise it.
 - "quote" must be copied character-for-character from the content (a short span, ideally under 120 characters). Findings whose quote is not found verbatim are automatically discarded.
-- A deterministic rule engine has already checked spelling of terms, banned words, figures against the facts library, links, headings and contrast. Focus on what needs judgement: tone and voice, messaging pillars, call-to-action clarity, implied or misleading claims, fear/urgency tactics, and whether the content serves the creator's stated goal.
+- A deterministic rule engine has already checked brand-name spelling, preferred terms, banned and hype words, capitals, exclamation marks, figures against the facts library, absolute promises and listed superlatives, alt text, link text, headings and contrast. Do NOT report those again. Focus on what needs judgement: tone and voice, messaging pillars, call-to-action clarity, implied or misleading claims, fear/urgency tactics, and whether the content serves the creator's stated goal.
 - "replacement" is a drop-in rewrite of exactly the quoted text that fixes the issue while preserving the creator's purpose, meaning and approximate length. Use "" when the fix needs a human decision.
 - Never invent facts or figures. Only use figures that appear in the approved facts list.
 - Placeholders like [REDACTED_1] hide confidential text; keep them unchanged if quoted.
