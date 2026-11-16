@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Keel Round 2</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 16mm 15mm; }
+  :root { --ink:#1f2328; --muted:#6b7280; --brand:#1f2328; --accent:#9b1c31; --line:#d1d5db; --soft:#f3f4f6; --ai:#6b7280; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Inter, system-ui, -apple-system, Roboto, sans-serif; color: var(--ink); font-size: 10.6pt; line-height: 1.5; margin: 0; background: #fff; }
+  h1 { font-size: 30pt; margin: 0 0 4px; color: var(--brand); letter-spacing: -.01em; }
+  h2 { font-size: 14.5pt; color: var(--brand); margin: 20px 0 8px; padding-bottom: 4px; border-bottom: 2px solid var(--brand); break-after: avoid; }
+  h3 { font-size: 11.2pt; margin: 14px 0 4px; break-after: avoid; }
+  p { margin: 5px 0; } ul, ol { margin: 4px 0; padding-left: 18px; } li { margin: 2px 0; }
+  .num { display: inline-block; background: var(--brand); color: #fff; border-radius: 4px; padding: 0 6px; margin-right: 6px; font-size: 11pt; }
+  .muted { color: var(--muted); } .small { font-size: 9pt; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 9.7pt; break-inside: avoid; }
+  th { background: var(--soft); text-align: left; font-weight: 600; }
+  th, td { border: 1px solid var(--line); padding: 5px 7px; vertical-align: top; }
+  .box { border: 1px solid var(--line); background: var(--soft); border-radius: 6px; padding: 8px 11px; margin: 8px 0; break-inside: avoid; }
+  .box.teal { background: #f8e8eb; border-color: #e7b9c1; }
+  .cover { height: 250mm; display: flex; flex-direction: column; justify-content: space-between; break-after: page; }
+  .cover .tag { font-size: 13.5pt; color: var(--muted); max-width: 155mm; }
+  .cover .logo { width: 60px; height: 60px; }
+  .kv td:first-child { width: 42mm; font-weight: 600; background: var(--soft); }
+  figure { margin: 10px 0 12px; break-inside: avoid; }
+  figure svg, figure img { width: 100%; display: block; }
+  figure img { border: 1px solid var(--line); border-radius: 6px; }
+  figcaption { font-size: 8.8pt; color: var(--muted); margin-top: 4px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pb { break-before: page; }
+  .crit { font-size: 8.6pt; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .pill { display:inline-block; font-size: 8.5pt; padding: 0 6px; border-radius: 10px; border: 1px solid var(--line); }
+  .must { background:#f8e8eb; border-color:#e7b9c1; } .should { background:#f3f4f6; border-color:#d1d5db; }
+</style>
+</head>
+<body>
+
+<!-- ───────────────────────── COVER ───────────────────────── -->
+<section class="cover">
+  <div>
+    <svg class="logo" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#1f2328"/><path d="M8 10h16l-8 13z" fill="#e0566a"/></svg>
+    <p class="muted" style="margin-top:28px">CodeZen India · Inkloom AI problem statement · Round 2: The Build</p>
+    <h1>Keel</h1>
+    <p class="tag">A working tool that checks marketing content before it is published. You put in a post, an ad, an email or a document. Keel checks it against the brand's rules, approved facts, words and colours. Every problem comes back with the rule it breaks and a suggested fix, and a person makes the final approval.</p>
+  </div>
+  <div>
+    <table class="kv">
+      <tr><td>Team name</td><td>Grinders</td></tr>
+      <tr><td>Team leader</td><td>Shivani Jogiya</td></tr>
+      <tr><td>Team member</td><td>Ansh Jerath</td></tr>
+      <tr><td>Live app</td><td>(add the live link here)</td></tr>
+      <tr><td>Source code</td><td>(add the repository link here)</td></tr>
+      <tr><td>Date</td><td>18 November 2026</td></tr>
+    </table>
+    <p class="small muted" style="margin-top:14px">Contents: 1 What Keel does · 2 How to try it · 3 Completed features · 4 How it is built · 5 Results we measured · 6 Changes from our Round 1 plan · 7 Three improvements for Round 3 · 8 Known limits · 9 Team and disclosures</p>
+  </div>
+</section>
+
+<!-- ───────────────────────── 1 ───────────────────────── -->
+<h2><span class="num">1</span>What Keel does</h2>
+<p>Companies publish content written by many people: their own marketers, agencies, freelancers and AI tools. The brand rules sit in a PDF that nobody reads while writing, and approved numbers go out of date. So small mistakes slip through: old figures, promises like "guaranteed returns", images with no description, and mentions of products that have not been announced.</p>
+<p>Keel checks every piece before it goes out:</p>
+<ol>
+  <li>A writer pastes or uploads a draft: text, Word, PDF, PowerPoint or an image.</li>
+  <li>Keel underlines each problem. For each one it shows what is wrong, why, the exact rule or approved fact it breaks, and a suggested fix.</li>
+  <li>The writer applies, edits or rejects each fix (with a reason), then submits.</li>
+  <li>A reviewer approves it or sends it back. Approval stays locked while serious problems are open, unless the reviewer overrides them with a written reason.</li>
+  <li>The brand team sees which mistakes keep coming back and which rules confuse people, and can make those rules clearer.</li>
+</ol>
+
+<!-- ───────────────────────── 2 ───────────────────────── -->
+<h2><span class="num">2</span>How to try it (no sign-up needed)</h2>
+<p>Open the live link. The sign-in screen shows four people from a made-up company called Fernway. Click a name to sign in as that person. The same steps are listed on the sign-in screen and in a "Try this" box after signing in.</p>
+<table>
+  <tr><th style="width:22%">Sign in as</th><th>What to do</th></tr>
+  <tr><td>Aditi (writer)</td><td>Open "Diwali savings push". Click an underlined phrase to see the rule and the fix. Click "Apply fix" on the outdated rate (7.5%); Keel then asks for the required warning text. Click "Submit for review".</td></tr>
+  <tr><td>Priya (reviewer)</td><td>Open "Diwali referral SMS". "Approve" is locked because a blocker is open. Override it with a written reason, or click "Request changes".</td></tr>
+  <tr><td>Sam (brand admin)</td><td>Open "Insights". Click "Clarify this guideline" on the unclear rule, see "Did clarifying the guideline help?" and "Measured accuracy". Open "Brand kit" to edit rules and approved facts.</td></tr>
+  <tr><td>Marcus (agency)</td><td>Open "App rating social post": the unannounced product is blocked. In "Brand kit", secret items are hidden from agency accounts.</td></tr>
+  <tr><td>Anyone</td><td>Click "New submission" and paste your own text, or upload a PDF, PowerPoint, Word file or image. Problems appear as you type.</td></tr>
+</table>
+<p class="small muted">Everyone shares one demo. The "Reset demo data" button on the sign-in screen puts it back to the start. The free hosting plan sleeps when nobody uses it, so the first visit can take about a minute to load.</p>
+
+<figure>
+<img src="screenshots/03-review-workspace.png" alt="Review screen with underlined problems and a list of findings">
+<figcaption><b>Figure 1.</b> The review screen. Problems are underlined in the draft. Each finding shows its level, the rule it breaks (here CLAIM-01), why, and a fix. All names and data are made up.</figcaption>
+</figure>
+
+<!-- ───────────────────────── 3 ───────────────────────── -->
+<h2><span class="num">3</span>Completed features</h2>
+<p>Everything below works in the live app from start to finish.</p>
+<table>
+  <tr><th style="width:24%">Feature</th><th>What works now</th></tr>
+  <tr><td>Brand kit</td><td>Rules with versions and a change history; approved facts with source, valid dates, old values and required warning text; colours, fonts, logos and standard text; a list of secret terms. Admins can paste a style guide and get suggested rules to approve.</td></tr>
+  <tr><td>Content intake</td><td>Paste text, Markdown or HTML; upload Word (.docx), PDF and PowerPoint (.pptx); attach images. Text inside images can be read with OCR and checked too.</td></tr>
+  <tr><td>Rule checks (17 types)</td><td>Preferred words, brand-name spelling, jargon and hype words, too many exclamation marks, shouting in capitals, every number against approved facts (out of date, expired, wrong, no source), promises such as "risk-free", missing warning text, secret terms, reading level, image descriptions, link text, heading order, colour contrast, brand colours and length limits per channel.</td></tr>
+  <tr><td>AI checks (optional)</td><td>Google Gemini checks tone, key messages, calls to action, hidden claims and images, and writes fixes that keep the writer's meaning. Secret words are hidden first, and each AI finding must quote the real text and name a real rule, or it is thrown away.</td></tr>
+  <tr><td>Explained findings</td><td>Each problem shows what, why, the rule or fact (with ID and version), a before and after fix, rule or AI, confidence, and the page or slide it is on.</td></tr>
+  <tr><td>Human decisions</td><td>Apply a fix (makes a new version), edit it first, or reject it with a reason. Only reviewers can override blockers, with a written reason. Decisions carry over to later versions.</td></tr>
+  <tr><td>Approval flow</td><td>Draft → In review → Changes requested → Approved → Published, with four roles, comments, version comparison and a full audit log. Writers cannot approve their own work. Editing approved content sends it back to review.</td></tr>
+  <tr><td>Claim list</td><td>Every number and claim with its result and the approved fact it was checked against.</td></tr>
+  <tr><td>Insights</td><td>Problems over time, top mistakes, coaching suggestions, unclear rules, a "clarify this guideline" flow with before and after results, and measured accuracy.</td></tr>
+  <tr><td>Privacy and AI page</td><td>Plain-language explanation, a switch to turn AI off for everyone, and a log of every AI call (no content stored).</td></tr>
+  <tr><td>Demo helpers</td><td>Step-by-step guide on the sign-in screen, a "Try this" box for each role, a draft already waiting for the reviewer, and a "Reset demo data" button.</td></tr>
+</table>
+
+<figure>
+<img src="screenshots/14-pdf-by-page.png" alt="A PDF brochure checked page by page">
+<figcaption><b>Figure 2.</b> A two-page PDF brochure after upload. Page dividers in the text, a page chip on each finding, and a page filter.</figcaption>
+</figure>
+
+<!-- ───────────────────────── 4 ───────────────────────── -->
+<h2><span class="num">4</span>How it is built</h2>
+<h3>Technology</h3>
+<table>
+  <tr><th style="width:18%">Part</th><th style="width:30%">Choice</th><th>Why</th></tr>
+  <tr><td>Website</td><td>React 18 with Vite</td><td>Interactive screens for highlighting, live checks and version comparison.</td></tr>
+  <tr><td>Server</td><td>Node.js 24 with Express</td><td>One language for the whole app, which suits a 2-person team.</td></tr>
+  <tr><td>Database</td><td>SQLite built into Node.js</td><td>No database server to run. The whole database is one file.</td></tr>
+  <tr><td>AI</td><td>Google Gemini through the official @google/genai SDK, with JSON answers checked by zod</td><td>The team has Gemini access. Structured answers can be checked by code. The app works without it.</td></tr>
+  <tr><td>Documents</td><td>mammoth (Word), pdf.js (PDF), jszip (PowerPoint)</td><td>Read documents on our own server.</td></tr>
+  <tr><td>Text in images</td><td>Tesseract OCR with the English model bundled</td><td>Runs on our server, so images are not sent anywhere for this.</td></tr>
+  <tr><td>Testing</td><td>node:test, a headless-browser script, a labelled accuracy test set</td><td>45 automated tests, an 18-step browser test, and an accuracy check on every change.</td></tr>
+  <tr><td>Hosting</td><td>Render (free plan), GitHub Actions</td><td>Public link with no setup; tests run on every push.</td></tr>
+</table>
+
+<h3>Architecture</h3>
+<figure>
+<svg viewBox="0 0 760 286" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" font-size="11" fill="#1f2328">
+  <defs><marker id="b1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1f2328"/></marker>
+  <marker id="b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/></marker></defs>
+  <rect x="6" y="20" width="170" height="246" rx="8" fill="#f3f4f6" stroke="#1f2328"/>
+  <text x="91" y="42" text-anchor="middle" font-weight="700">Web app (browser)</text>
+  <text x="91" y="56" text-anchor="middle" font-size="9.5" fill="#6b7280">React + Vite</text>
+  <text x="18" y="82">• Editor with live checks</text><text x="18" y="102">• Highlighted problems</text><text x="18" y="122">• Pages and slides view</text><text x="18" y="142">• Approval and history</text><text x="18" y="162">• Brand kit (admin)</text><text x="18" y="182">• Insights and accuracy</text>
+  <rect x="16" y="200" width="150" height="54" rx="6" fill="#f8e8eb" stroke="#e7b9c1"/><text x="91" y="221" text-anchor="middle" font-size="10" fill="#9b1c31">Image colours found</text><text x="91" y="236" text-anchor="middle" font-size="10" fill="#9b1c31">in the browser</text>
+
+  <rect x="214" y="20" width="326" height="246" rx="8" fill="#fff" stroke="#1f2328" stroke-width="1.5"/>
+  <text x="377" y="42" text-anchor="middle" font-weight="700">Server (Node.js + Express)</text>
+  <text x="377" y="56" text-anchor="middle" font-size="9.5" fill="#6b7280">checks the user's role on every request</text>
+  <rect x="226" y="66" width="96" height="62" rx="6" fill="#fff" stroke="#1f2328"/><text x="274" y="86" text-anchor="middle" font-weight="700" font-size="10.5">Intake</text><text x="274" y="102" text-anchor="middle" font-size="9">PDF, PowerPoint,</text><text x="274" y="115" text-anchor="middle" font-size="9">Word, OCR</text>
+  <rect x="330" y="66" width="96" height="62" rx="6" fill="#f8e8eb" stroke="#9b1c31"/><text x="378" y="86" text-anchor="middle" font-weight="700" font-size="10.5">Rule engine</text><text x="378" y="102" text-anchor="middle" font-size="9">offline, same</text><text x="378" y="115" text-anchor="middle" font-size="9">answer every time</text>
+  <rect x="434" y="66" width="96" height="62" rx="6" fill="#f3f4f6" stroke="#6b7280" stroke-dasharray="4 3"/><text x="482" y="86" text-anchor="middle" font-weight="700" font-size="10.5">AI layer</text><text x="482" y="102" text-anchor="middle" font-size="9">hide secrets → ask</text><text x="482" y="115" text-anchor="middle" font-size="9">→ verify → log</text>
+  <rect x="226" y="138" width="304" height="40" rx="6" fill="#f3f4f6" stroke="#9ca3af"/><text x="378" y="155" text-anchor="middle" font-weight="700">Review manager</text><text x="378" y="170" text-anchor="middle" font-size="9.5">versions · decisions carried over · claim list</text>
+  <rect x="226" y="184" width="304" height="40" rx="6" fill="#f3f4f6" stroke="#9ca3af"/><text x="378" y="201" text-anchor="middle" font-weight="700">Approval and insights</text><text x="378" y="216" text-anchor="middle" font-size="9.5">approval gate · audit log · unclear rules · before/after</text>
+  <rect x="226" y="230" width="304" height="28" rx="6" fill="#fff" stroke="#9ca3af"/><text x="378" y="248" text-anchor="middle" font-size="9.5">Accuracy test set (126 labelled drafts) runs on every change</text>
+
+  <rect x="576" y="20" width="178" height="124" rx="8" fill="#f3f4f6" stroke="#1f2328"/><text x="665" y="42" text-anchor="middle" font-weight="700">SQLite database</text>
+  <text x="588" y="66" font-size="10.5">brand kit + rule history</text><text x="588" y="84" font-size="10.5">content and versions</text><text x="588" y="102" font-size="10.5">findings (with rule version)</text><text x="588" y="120" font-size="10.5">claims, audit log, AI log</text>
+  <rect x="576" y="164" width="178" height="102" rx="8" fill="#fff" stroke="#6b7280" stroke-dasharray="5 3"/><text x="665" y="186" text-anchor="middle" font-weight="700" fill="#6b7280">Google Gemini API</text>
+  <text x="588" y="208" font-size="10.5">optional; only text with</text><text x="588" y="224" font-size="10.5">secret words hidden, only</text><text x="588" y="240" font-size="10.5">when a person asks</text>
+
+  <line x1="178" y1="140" x2="212" y2="140" stroke="#1f2328" stroke-width="1.6" marker-start="url(#b1)" marker-end="url(#b1)"/>
+  <line x1="542" y1="80" x2="574" y2="80" stroke="#1f2328" stroke-width="1.6" marker-start="url(#b1)" marker-end="url(#b1)"/>
+  <line x1="530" y1="110" x2="574" y2="200" stroke="#6b7280" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#b2)"/>
+</svg>
+<figcaption><b>Figure 3.</b> How the parts fit together. The dashed line to Gemini is used only when a person asks for an AI check and the workspace allows AI.</figcaption>
+</figure>
+
+<h3>Key implementation details</h3>
+<ul>
+  <li>No source, no finding. Every rule finding is built from a stored rule or fact, so it always carries the ID and wording. For AI findings, our server checks that the cited rule exists and the quoted text is really in the draft; anything else is thrown away and counted.</li>
+  <li>Exact positions in every format. HTML tags, link addresses and page markers are replaced with spaces of the same length before checking, so highlights and one-click fixes land on the exact words.</li>
+  <li>Pages live in the text. PDF and PowerPoint text is saved with small markers (for example "page: Slide 3") that the rules ignore and the screen shows as dividers. They stay correct when the text is edited.</li>
+  <li>Decisions survive edits. Each finding has a stable ID, so a rejected or overridden finding stays that way in the next version, and fixed ones are marked resolved.</li>
+  <li>Facts change over time. Facts have start and end dates and old values, so Keel can say "out of date: use 120,000+" instead of just "unsupported".</li>
+  <li>Rules have a history. Every finding records which version of the rule raised it, so a clarified rule can be judged before and after.</li>
+</ul>
+
+<!-- ───────────────────────── 5 ───────────────────────── -->
+<h2><span class="num">5</span>Results we measured</h2>
+<h3>Accuracy of the rule checks</h3>
+<p>We built a labelled test set of 126 drafts with 167 known problems. Precision means: of the things Keel flagged, how many were real problems. Recall means: of the real problems, how many Keel found.</p>
+<table>
+  <tr><th>Test set</th><th>Drafts</th><th>Precision</th><th>Recall</th></tr>
+  <tr><td>Realistic drafts, before our fixes</td><td>22</td><td>76%</td><td>96%</td></tr>
+  <tr><td>Realistic drafts, after our fixes</td><td>22</td><td>100%</td><td>98%</td></tr>
+  <tr><td>New drafts written after the fixes (never used for tuning)</td><td>14</td><td>57%</td><td>57%</td></tr>
+  <tr><td>Generated drafts (easier)</td><td>90</td><td>100%</td><td>100%</td></tr>
+  <tr><td>Blocker-level flags, all sets</td><td>126</td><td>100%</td><td>100%</td></tr>
+</table>
+<p>The test set found real false alarms that we then fixed: dates, phone numbers, durations and example amounts were being treated as statistics, and "the best way to start" was treated as a product claim. The 100% after fixing is partly because we tuned on those drafts, so we wrote 14 new drafts afterwards. On those, Keel scores 57%. That is our honest estimate for new content, and it shows four gaps we will fix in Round 3. Blocker flags (impossible promises and leaks) were right every time.</p>
+<figure>
+<img src="screenshots/17-accuracy.png" alt="Measured accuracy card in the app">
+<figcaption><b>Figure 4.</b> The accuracy results inside the app (Insights page). The build fails if fewer than 90% of blocker flags are correct.</figcaption>
+</figure>
+<h3>Clarifying an unclear rule</h3>
+<p>In the demo data, a rule about claims was dismissed 50% of the time (4 decisions). After the brand admin clarified when approved member quotes are allowed, it was dismissed 17% of the time (6 decisions). These numbers come from made-up demo data and only show how the feature works; real numbers will come from real use.</p>
+<figure>
+<img src="screenshots/16-clarification-impact.png" alt="Before and after dismissal rates for a clarified rule">
+<figcaption><b>Figure 5.</b> "Did clarifying the guideline help?" on the Insights page (demo data).</figcaption>
+</figure>
+
+<!-- ───────────────────────── 6 ───────────────────────── -->
+<h2><span class="num">6</span>Changes from our Round 1 plan</h2>
+<table>
+  <tr><th style="width:26%">Round 1 plan</th><th style="width:34%">What we did</th><th>Why</th></tr>
+  <tr><td>AI by a different provider</td><td>AI by Google Gemini</td><td>Our team has access to the Gemini API. The safety design (hide secrets, check every AI answer, log every call) did not change.</td></tr>
+  <tr><td>Three improvements spread over Rounds 2 and 3 (accuracy test set, guideline loop, more formats)</td><td>All three are built in Round 2</td><td>The core flow came together early, so we finished them now. Section 7 lists three new improvements for Round 3.</td></tr>
+  <tr><td>Text in images by "OCR or AI vision"</td><td>OCR on our own server (Tesseract)</td><td>Images stay private, and it works without an AI key.</td></tr>
+  <tr><td>About 100 labelled drafts</td><td>126 drafts in three groups, including drafts never used for tuning</td><td>After fixing false alarms we scored 100%, which we did not trust. A separate untouched set gives an honest number.</td></tr>
+  <tr><td>6 to 8 user interviews in the first week of Round 2</td><td>Not done yet; moved to Round 3</td><td>We put the time into making the product work end to end.</td></tr>
+  <tr><td>Docker container on Render</td><td>Render's Node.js service (Docker file kept)</td><td>Simpler and faster to deploy on the free plan.</td></tr>
+  <tr><td>Not planned</td><td>Guide on the sign-in screen, "Try this" box, a draft waiting for the reviewer, "Reset demo data"</td><td>Judges must be able to use the app without help.</td></tr>
+</table>
+
+<!-- ───────────────────────── 7 ───────────────────────── -->
+<h2><span class="num">7</span>Three improvements we will complete in Round 3</h2>
+<ol>
+  <li>Alerts when an approved fact changes. When a fact is updated or expires (for example, the interest rate changes from 7.1% to 6.9%), Keel will find every approved or published piece that uses the old fact. It will open a re-review task for its owner with the fix already filled in, and show the brand team how much live content is out of date. Today Keel only catches old facts in new drafts; this catches them in content that is already out in the world.</li>
+  <li>Checks where people write. A browser extension for Chrome and Edge will check the text box you are typing in (email, LinkedIn, a website editor) against the same brand kit, with the same explained findings. A pre-publish API with access keys will let a website or CMS refuse to publish until Keel has approved the content.</li>
+  <li>Learning from reviewer decisions. When people keep rejecting or overriding a rule for the same reason, Keel will draft a rule exception or a clearer rule from those decisions (using Gemini, tied to the real decisions). The admin approves it, and the accuracy test set checks the change before it goes live. We will also grow the untouched test set to 50 or more real drafts gathered in user interviews, and fix the four gaps it found.</li>
+</ol>
+
+<!-- ───────────────────────── 8 ───────────────────────── -->
+<h2><span class="num">8</span>Known limits</h2>
+<ul>
+  <li>Sign-in is a demo: you pick a person, with no password. Real use needs company sign-in.</li>
+  <li>English only. Scanned PDFs have no text layer: export those pages as images and use "Read text in image". Old .ppt files must be saved as .pptx.</li>
+  <li>The AI features have been tested with a simulated Gemini service. We still need to run them against the live Gemini service and score them on their own test cases.</li>
+  <li>The free hosting plan sleeps when idle and resets the demo when it restarts.</li>
+</ul>
+
+<!-- ───────────────────────── 9 ───────────────────────── -->
+<h2><span class="num">9</span>Team and disclosures</h2>
+<table>
+  <tr><th>Name</th><th>Position</th><th>Work in Round 2</th></tr>
+  <tr><td>Shivani Jogiya</td><td>Team leader</td><td>Frontend, user experience, demo guide, testing, documentation</td></tr>
+  <tr><td>Ansh Jerath</td><td>Team member</td><td>Backend, rule engine, document and OCR intake, Gemini integration, accuracy test set, hosting</td></tr>
+</table>
+<ul class="small">
+  <li>AI help: we used an AI coding assistant to help write the code and this document. The team reviews the work and records its own contributions in the commit history.</li>
+  <li>Open-source libraries: React, Vite, Express, @google/genai, zod, mammoth, pdf.js, jszip, tesseract.js, puppeteer-core (testing only). No paid templates.</li>
+  <li>Demo data: the "Fernway" brand, its people, numbers and history are all made up.</li>
+</ul>
+</body>
+</html>
