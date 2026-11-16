@@ -1,0 +1,15 @@
+node_modules/
+dist/
+data/
+*.db
+*.db-wal
+*.db-shm
+.env
+docs/screenshots/FAILED.png
+# Round 1 materials (kept locally, not part of the codebase)
+docs/round1-plan.html
+docs/Grinders-Keel-Round1-Plan.docx
+docs/Grinders-Keel-Round1-Plan.pdf
+docs/Form-Answers.md
+docs/render-pdf.js
+docs/round1-plan-from-html.pdf

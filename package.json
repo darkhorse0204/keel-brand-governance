@@ -1,0 +1,38 @@
+{
+  "name": "keel-brand-governance",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Keel - pre-publication brand governance: explainable checks, claim ledger, human-in-the-loop review.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"node --disable-warning=ExperimentalWarning --env-file-if-exists=.env --watch server/index.js\" \"vite\"",
+    "build": "vite build",
+    "start": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env server/index.js",
+    "seed": "node --disable-warning=ExperimentalWarning server/seed.js --reset",
+    "test": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/*.test.js",
+    "eval": "node --disable-warning=ExperimentalWarning --env-file-if-exists=.env eval/run.mjs",
+    "e2e": "node test/e2e/ui-walkthrough.mjs docs/screenshots",
+    "fixtures": "node test/fixtures/make-fixtures.mjs"
+  },
+  "dependencies": {
+    "@google/genai": "^3.4.0",
+    "@tesseract.js-data/eng": "^1.0.0",
+    "express": "^4.22.3",
+    "jszip": "^3.10.2",
+    "mammoth": "^1.13.0",
+    "pdfjs-dist": "^6.5.438",
+    "tesseract.js": "^7.0.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^10.0.7",
+    "puppeteer-core": "^23.11.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^6.4.6"
+  }
+}
