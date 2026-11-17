@@ -34,8 +34,17 @@ export async function runReview(db, subId, { ai = false, actor = null, today } =
     const r = await aiReview(db, { submission_id: sub.id, body: rev.body, channel: sub.channel, format: sub.format, intent: j(sub.intent, {}) });
     aiMeta = r.ok ? { ok: true, summary: r.summary, intent: r.intent, kept: r.findings.length, discarded: r.discarded.length, at: now() } : { ok: false, error: r.error, at: now() };
     if (r.ok) {
-      // the ai sometimes repeats what the rule engine already caught (same rule, same words) - keep one copy
-      const dup = (f) => result.findings.some((g) => g.engine === "rules" && g.rule_id === f.rule_id && g.start != null && f.start < g.end && g.start < f.end);
+      // the ai sometimes repeats what the rule engine already caught, even under another rule id
+      // (e.g. "REVOLUTIONARY" as hype). if rule findings already cover at least half of the ai's
+      // quote, it's the same problem - keep the rule finding. a longer quote (say a fear-based
+      // sentence that also contains one flagged word) is still kept.
+      const covered = (f) => {
+        let n = 0;
+        for (let p = f.start; p < f.end; p++) if (result.findings.some((g) => g.engine === "rules" && g.start != null && p >= g.start && p < g.end)) n++;
+        return n;
+      };
+      const sameRule = (f) => result.findings.some((g) => g.engine === "rules" && g.rule_id === f.rule_id && g.start != null && f.start < g.end && g.start < f.end);
+      const dup = (f) => f.start != null && f.end > f.start && (sameRule(f) || covered(f) / (f.end - f.start) >= 0.5);
       const fresh = r.findings.filter((f) => !dup(f));
       aiMeta.kept = fresh.length;
       aiMeta.duplicates = r.findings.length - fresh.length;

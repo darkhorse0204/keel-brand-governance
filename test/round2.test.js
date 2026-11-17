@@ -182,9 +182,10 @@ test("AI findings that repeat a rule-engine finding are dropped (one copy per pr
   ai._setClientForTests({ models: { generateContent: async () => jsonResponse({ summary: "", intent_alignment: { verdict: "aligned", note: "" }, findings: [
     { rule_id: "TERM-01", quote: "FernWay", issue: "spelling", why: "x", replacement: "Fernway", severity: "major", confidence: 0.95 },
     { rule_id: "TONE-05", quote: "You'll regret it if you wait", issue: "fear", why: "x", replacement: "Start whenever you're ready", severity: "minor", confidence: 0.9 },
+    { rule_id: "CLAIM-01", quote: "FernWay", issue: "same word, different rule", why: "x", replacement: "", severity: "minor", confidence: 0.9 },
   ] }) } });
   const r = await runReview(db, "s_dup", { ai: true });
-  assert.equal(r.ai.kept, 1); assert.equal(r.ai.duplicates, 1);
+  assert.equal(r.ai.kept, 1); assert.equal(r.ai.duplicates, 2, "same words under another rule id also count as a duplicate");
   const rows = db.prepare("SELECT rule_id, engine FROM findings WHERE submission_id='s_dup'").all();
   assert.equal(rows.filter((f) => f.rule_id === "TERM-01").length, 1);
   assert.ok(rows.some((f) => f.rule_id === "TONE-05" && f.engine === "ai"));

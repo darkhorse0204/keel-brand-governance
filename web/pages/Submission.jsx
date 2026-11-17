@@ -123,7 +123,7 @@ export default function Submission({ id }) {
                 </select>}
                 {d.ai && <span className="small muted">{d.ai.ok ? `AI reviewed ${timeAgo(d.ai.at)} · ${d.ai.discarded} ungrounded discarded` : `AI: ${d.ai.error}`}</span>}
               </div>
-              {d.ai?.ok && d.ai.summary && show === "open" && <div className="small" style={{ padding: "8px 12px 0" }}><span className="chip ai">AI summary</span> {d.ai.summary}</div>}
+              {d.ai?.ok && d.ai.summary && show === "open" && <div className="small" style={{ margin: "8px 12px 0", paddingBottom: 8, borderBottom: "1px solid var(--border)" }}><span className="chip ai">AI summary</span> {d.ai.summary}</div>}
               <div className="findings">
                 {!visible.length && <div className="empty">{show === "open" ? "No open findings. This revision is ready for review." : "Nothing handled yet."}</div>}
                 {visible.map((f) => <FindingCard key={f.id} f={f} page={pageOf(pages, f.start_pos)} sel={sel === f.id} onSel={() => setSel(f.id)} perms={p} me={me} meta={meta} busy={busy} act={act} subId={id} author={s.author_id} />)}
