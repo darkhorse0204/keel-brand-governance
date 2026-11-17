@@ -70,9 +70,9 @@ In Round 1 we committed to three improvements. This page shows what we built for
   - secret words are hidden before sending;
   - every AI finding must quote the real text and name a real rule;
   - every call is logged.
-  - Model: `gemini-2.5-flash`, which can be changed with `GEMINI_MODEL`.
-- **Tests:** 47 automated tests (up from 28) cover the new formats, OCR, the Gemini request and its safety checks (with a fake Gemini client), model fallbacks, duplicate removal, the clarification loop, and each false-alarm fix. A browser walkthrough clicks through 18 steps across all four roles.
-- **Live AI check (18 Nov):** every AI feature was run against the real Gemini API. On the 8 labelled AI cases the AI layer scored 100% precision and 100% recall on the first run, and 100% / 80% on the second (one fear-based line missed, one ungrounded finding thrown away). We fixed three problems this found: JSON output needs the `v1beta` API, busy models now fall back to another model, and AI findings that repeat a rule-engine finding are dropped.
+  - Model: `gemini-3.1-flash-lite` (about 500 free requests a day), with fallbacks to other Gemini models; change it with `GEMINI_MODEL`.
+- **Tests:** 48 automated tests (up from 28) cover the new formats, OCR, the Gemini request and its safety checks (with a fake Gemini client), model fallbacks and daily-quota handling, duplicate removal, the clarification loop, and each false-alarm fix. A browser walkthrough clicks through 18 steps across all four roles.
+- **Live AI check (17 Nov):** every AI feature was run against the real Gemini API. With the default model (gemini-3.1-flash-lite), the AI layer found all 5 labelled problems in every one of 4 runs on our 8 AI test cases (100% recall). Precision was 83%, 83%, 100% and 100%: in two runs it raised one extra flag on the "one clear call to action" rule. The slower gemini-2.5-flash scored 100% / 100% and 100% / 80% on two earlier runs. Eight cases is a small sample. Live testing also found problems we fixed: JSON output needs the `v1beta` API, busy or exhausted models now fall back to another model, and AI findings that repeat a rule-engine finding are dropped.
 - **Continuous integration:** GitHub Actions runs the tests, the accuracy evaluation and the build on every push.
 
 ## Round 3: three new improvements
@@ -89,7 +89,7 @@ We will also do the user interviews and the hands-on test planned in Round 1, an
 
 ```bash
 npm install && npm run build && npm start   # app on http://localhost:8787
-npm test                                   # 47 tests
+npm test                                   # 48 tests
 npm run eval                               # accuracy report → docs/eval-report.md
 ```
 

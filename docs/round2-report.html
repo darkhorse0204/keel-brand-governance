@@ -51,7 +51,7 @@
       <tr><td>Team member</td><td>Ansh Jerath</td></tr>
       <tr><td>Live app</td><td>(add the live link here)</td></tr>
       <tr><td>Source code</td><td>(add the repository link here)</td></tr>
-      <tr><td>Date</td><td>18 November 2026</td></tr>
+      <tr><td>Date</td><td>17 November 2026</td></tr>
     </table>
     <p class="small muted" style="margin-top:14px">Contents: 1 What Keel does · 2 How to try it · 3 Completed features · 4 How it is built · 5 Results we measured · 6 Changes from our Round 1 plan · 7 Three improvements for Round 3 · 8 Known limits · 9 Team and disclosures</p>
   </div>
@@ -121,7 +121,7 @@
   <tr><td>AI</td><td>Google Gemini through the official @google/genai SDK, with JSON answers checked by zod</td><td>The team has Gemini access. Structured answers can be checked by code. The app works without it.</td></tr>
   <tr><td>Documents</td><td>mammoth (Word), pdf.js (PDF), jszip (PowerPoint)</td><td>Read documents on our own server.</td></tr>
   <tr><td>Text in images</td><td>Tesseract OCR with the English model bundled</td><td>Runs on our server, so images are not sent anywhere for this.</td></tr>
-  <tr><td>Testing</td><td>node:test, a headless-browser script, a labelled accuracy test set</td><td>47 automated tests, an 18-step browser test, and an accuracy check on every change.</td></tr>
+  <tr><td>Testing</td><td>node:test, a headless-browser script, a labelled accuracy test set</td><td>48 automated tests, an 18-step browser test, and an accuracy check on every change.</td></tr>
   <tr><td>Hosting</td><td>Render (free plan), GitHub Actions</td><td>Public link with no setup; tests run on every push.</td></tr>
 </table>
 
@@ -186,7 +186,7 @@
 <figcaption><b>Figure 4.</b> The accuracy results inside the app (Insights page). The build fails if fewer than 90% of blocker flags are correct.</figcaption>
 </figure>
 <h3>AI checks on the live Gemini service</h3>
-<p>We ran every AI feature against the real Gemini service: AI review, rewrite, image review and style-guide import. On our 8 labelled AI cases (fear-based or guilt-tripping lines, competing calls to action, messages that go against the brand's key promises) the AI scored 100% precision and 100% recall on the first run, and 100% precision and 80% recall on the second. Eight cases is a small sample. Live testing also found three problems we fixed: JSON answers need Gemini's v1beta API, a busy model now falls back to another model, and AI findings that repeat a rule-engine finding are removed.</p>
+<p>We ran every AI feature against the real Gemini service: AI review, rewrite, image review and style-guide import. Our 8 labelled AI cases cover fear-based or guilt-tripping lines, competing calls to action, and messages that go against the brand's key promises. With our default model, gemini-3.1-flash-lite, the AI found all 5 real problems in each of 4 runs. Its precision was 83%, 83%, 100% and 100%: in two runs it raised one extra flag about calls to action. Eight cases is a small sample. Live testing also found problems we fixed: JSON answers need Gemini's v1beta API, a busy or exhausted model now falls back to another model, and AI findings that repeat a rule-engine finding are removed.</p>
 <h3>Clarifying an unclear rule</h3>
 <p>In the demo data, a rule about claims was dismissed 50% of the time (4 decisions). After the brand admin clarified when approved member quotes are allowed, it was dismissed 17% of the time (6 decisions). These numbers come from made-up demo data and only show how the feature works; real numbers will come from real use.</p>
 <figure>
@@ -220,7 +220,7 @@
 <ul>
   <li>Sign-in is a demo: you pick a person, with no password. Real use needs company sign-in.</li>
   <li>English only. Scanned PDFs have no text layer: export those pages as images and use "Read text in image". Old .ppt files must be saved as .pptx.</li>
-  <li>The AI test set is small (8 cases), and AI answers vary between runs. AI checks can take 10 to 40 seconds when Gemini is busy.</li>
+  <li>The AI test set is small (8 cases), and AI answers vary between runs. On Google's free tier the AI gets about 500 requests a day; if that runs out, AI buttons show a clear message and the rule checks keep working.</li>
   <li>The free hosting plan sleeps when idle and resets the demo when it restarts.</li>
 </ul>
 

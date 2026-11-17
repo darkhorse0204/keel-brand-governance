@@ -27,7 +27,7 @@ cp .env.example .env        # then put your key in .env: GEMINI_API_KEY=...
 npm start                   # npm start / dev / eval read .env automatically
 ```
 
-Get a key at https://aistudio.google.com/apikey. The default model is `gemini-2.5-flash`; if it is busy or missing, Keel falls back to `gemini-3.5-flash`, `gemini-3.8-flash`, `gemini-3.7-flash` and `gemini-3.6-flash` in turn. On Google's free tier each model allows only about 20 requests a day, and a model that hits its daily limit is skipped until it resets (change with `GEMINI_MODEL` and `GEMINI_FALLBACK_MODELS`).
+Get a key at https://aistudio.google.com/apikey. The default model is `gemini-3.1-flash-lite`. If it is busy, out of quota or missing, Keel falls back to `gemini-3.5-flash-lite`, `gemini-2.5-flash` and `gemini-3.5-flash` in turn (change with `GEMINI_MODEL` and `GEMINI_FALLBACK_MODELS`). On Google's free tier the Flash-Lite models allow about 500 requests a day each and the Flash models only about 20; a model that hits its daily limit is skipped until it resets.
 
 ### Demo accounts (pick on the sign-in screen)
 
@@ -80,16 +80,16 @@ eval/              labelled test set + runner (precision/recall, quality gate) â
 
 ### AI usage details
 
-- SDK: `@google/genai`. Model: `gemini-2.5-flash` by default (override with `GEMINI_MODEL`).
+- SDK: `@google/genai`. Model: `gemini-3.1-flash-lite` by default, with Flash-Lite and Flash fallbacks (override with `GEMINI_MODEL` and `GEMINI_FALLBACK_MODELS`).
 - Structured output: `responseMimeType: "application/json"` with `responseJsonSchema`, then validated again with `zod`.
 - Blocked prompts or safety stops are reported as "the AI declined"; API errors (bad key, quota, missing model, outage) become plain messages. The rule engine is never blocked by AI failures.
-- **Tested both ways.** Automated tests use a fake Gemini client (request shape, redaction, grounding, fallbacks, error handling). We also ran every AI feature against the live Gemini API on 18 Nov 2026: AI review, rewrite, image review and style-guide import all worked, and the AI layer scored 100% precision / 100% recall and then 100% / 80% on two runs of the 8 labelled AI cases (`npm run eval -- --ai`). Eight cases is a small sample.
-- Live testing found and fixed three things: the SDK must use the `v1beta` API for JSON output, busy models need fallbacks, and the AI sometimes repeated rule-engine findings (now dropped as duplicates).
+- **Tested both ways.** Automated tests use a fake Gemini client (request shape, redaction, grounding, fallbacks, quota handling, error handling). We also ran every AI feature against the live Gemini API on 17 Nov 2026: AI review, rewrite, image review and style-guide import all worked. With the default model (gemini-3.1-flash-lite), the AI layer found all 5 labelled problems in every one of 4 runs on our 8 AI test cases (100% recall). Precision was 83%, 83%, 100% and 100%: in two runs it raised one extra flag on the "one clear call to action" rule. The slower gemini-2.5-flash scored 100% / 100% and 100% / 80% on two earlier runs. Eight cases is a small sample.
+- Live testing found and fixed four things: the SDK must use the `v1beta` API for JSON output, busy or exhausted models need fallbacks (the free tier allows only about 20 Flash requests a day, about 500 for Flash-Lite), and the AI sometimes repeated problems the rule engine had already flagged, sometimes under a different rule. Those repeats are now dropped.
 
 ## Testing and accuracy
 
 ```bash
-npm test                   # 47 unit + API tests (node:test), including PDF/PowerPoint/OCR fixtures
+npm test                   # 48 unit + API tests (node:test), including PDF/PowerPoint/OCR fixtures
 npm run eval               # accuracy on the labelled test set â†’ docs/eval-report.md (fails if blocker precision < 90%)
 npm run eval -- --ai       # also score the AI layer (needs GEMINI_API_KEY)
 npm start & npm run e2e    # headless Edge/Chrome walkthrough (18 steps), writes docs/screenshots/*.png
