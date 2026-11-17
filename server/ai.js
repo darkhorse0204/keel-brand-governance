@@ -13,12 +13,11 @@ import { z } from "zod";
 import { getSetting, now, loadBrandKit } from "./db.js";
 import { escapeRe } from "./engine/text.js";
 
-// gemini-2.5-flash answered in about a second in our live tests; newer flash models were often
-// overloaded (503). if the main model is busy or missing we try the fallbacks in order.
-export const MODEL = process.env.GEMINI_MODEL || process.env.KEEL_MODEL || "gemini-2.5-flash";
-// on the free tier each model has its own small daily quota (20 requests in our tests), so a chain
-// of models keeps ai working longer. a model that hit its daily limit is skipped until it resets.
-const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS ?? "gemini-3.5-flash,gemini-3.8-flash,gemini-3.7-flash,gemini-3.6-flash")
+// flash-lite models get about 500 free requests a day each (flash models only about 20), and
+// gemini-3.1-flash-lite answered in ~1.5s in our tests. if the main model is busy, out of quota or
+// missing we try the fallbacks in order; a model that hit its daily limit is skipped until it resets.
+export const MODEL = process.env.GEMINI_MODEL || process.env.KEEL_MODEL || "gemini-3.1-flash-lite";
+const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS ?? "gemini-3.5-flash-lite,gemini-2.5-flash,gemini-3.5-flash")
   .split(",").map((s) => s.trim()).filter((m) => m && m !== MODEL);
 const restingUntil = new Map(); // model -> time (ms) when its quota should be back
 export const PROVIDER = "Google Gemini";
