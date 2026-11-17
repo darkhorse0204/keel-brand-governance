@@ -96,7 +96,7 @@ if (args.has("--ai")) {
       const preds = r.ok ? r.findings.filter((f) => c.scope.includes(f.rule_id)) : [];
       rows.push({ id: c.id, title: c.title, error: r.ok ? null : r.error, discarded: r.ok ? r.discarded.length : 0, ...scoreCase({ ...c, expect: c.expect }, preds) });
     }
-    report.ai = { model: MODEL, ...summarise(rows), byRule: groupBy(rows, "rule"), discardedAsUngrounded: rows.reduce((n, r) => n + r.discarded, 0), errors: rows.filter((r) => r.error).map((r) => ({ case: r.id, error: r.error })) };
+    report.ai = { model: MODEL, ...summarise(rows), byRule: groupBy(rows, "rule"), discardedAsUngrounded: rows.reduce((n, r) => n + r.discarded, 0), mistakes: rows.flatMap((r) => [...r.fp.map((x) => ({ case: r.id, type: "false alarm", ...x })), ...r.fn.map((x) => ({ case: r.id, type: "missed", ...x }))]), errors: rows.filter((r) => r.error).map((r) => ({ case: r.id, error: r.error })) };
   }
 }
 
